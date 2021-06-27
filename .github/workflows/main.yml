@@ -52,8 +52,7 @@ steps
         port: ${{ secrets.PORT }}
         script: |
           cd /root/pm2-test
-          wget https://github.com/lipengzhou/realworld-
-nuxtjs/releases/latest/download/release.tgz -O release.tgz
+          wget https://codeload.github.com/walise/realword-nuxtjs/tar.gz/refs/tags/v0.1.3
           tar zxvf release.tgz
           npm install --production
           pm2 reload ecosystem.config.js
