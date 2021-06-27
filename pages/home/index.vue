@@ -78,17 +78,17 @@
             <p>{{article.description}}</p>
             <span>Read more...</span>
             <ul class="tag-list">
-            <li class="tag-default tag-pill tag-outline ng-binding ng-scope"
-                v-for="tag in article.tagList"
-                :key="tag"
-            >
-              {{tag}}
-            </li>
+              <li class="tag-default tag-pill tag-outline ng-binding ng-scope"
+                  v-for="tag in article.tagList"
+                  :key="tag"
+              >
+                {{tag}}
+              </li>
           </ul>
           </nuxt-link>
         </div>
          <!-- 分页按钮 -->
-         <nav>
+         <!-- <nav>
             <ul class="pagination">
               <li
                 class="page-item"
@@ -111,7 +111,13 @@
                 >{{ item }}</nuxt-link>
               </li>
             </ul>
-          </nav>
+          </nav> -->
+        <Pagination :total="articlesCount" 
+                    :pageCount="totalPage" 
+                    :activePage="page"
+                    :tag="$route.query.tag"
+                    :tab="tab">
+        </Pagination>
       </div>
       <div v-else class="article-preview">No articles are here... yet.</div>
       </div>
@@ -149,10 +155,11 @@
 import {mapState} from 'vuex'
 import {globalArticles,getYourFeedArticles,addFavorite,deleteFavorite} from '@/api/article'
 import {getTags} from '@/api/tag'
+import Pagination from '@/components/Pagination'
 export default {
     name: 'homePage',
     // {query} 就是我们要传入的查询文章的参数
-    async asyncData ({query}) {
+    async asyncData ({query,redirect}) {
       // 页码 没有传 就是第一页
       const page = Number.parseInt(query.page|| 1);
       // 每页显示文章数量
@@ -186,7 +193,8 @@ export default {
         limit,
         tab,
         tag,
-        tags
+        tags,
+        redirect
       }
     },
     watchQuery: ['page','tag','favorited'],// 监听路由参数的改变
@@ -196,9 +204,13 @@ export default {
         return Math.ceil(this.articlesCount/this.limit)
       }
     },
+    components: {
+      Pagination
+    },
     methods: {
       // 点赞与取消点赞
       favoriteEvent(article){
+        if(this.user){
         // 获取当前的点赞状态
         const status = article.favorited;
         article.favoriteDisable = true;
@@ -214,6 +226,11 @@ export default {
           addFavorite(article.slug)
         }
         article.favoriteDisable = false;
+        }else{
+          this.$router.push({
+            name:'login'
+          })
+        }
       }
     },
 }

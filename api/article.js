@@ -59,8 +59,7 @@ const addComments = (slug,params) => {
     return  new request({
         method: 'post',
         url: `/api/articles/${slug}/comments`,
-        slug,
-        params
+        data:params
     })
 }
 // 删除评论

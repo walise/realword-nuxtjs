@@ -82,15 +82,21 @@
                       'btn-primary': article.favorited,
                        'disabled': article.favoriteDisable
                     }"
+                      @click="favoriteEvent(article)"
               >
                 <i class="ion-heart"></i> {{article.favoritesCount}}
               </button>
             </div>
-            <a href="" class="preview-link">
+            <nuxt-link :to="{
+              name: 'article',
+              params: {
+                slug: article.slug
+              }
+            }" class="preview-link">
               <h1>{{article.title}}</h1>
               <p>{{article.description}}</p>
               <span>Read more...</span>
-            </a>
+            </nuxt-link>
           </div>
         </div>
         <div v-else class="article-preview">No articles are here... yet.</div>
@@ -105,8 +111,9 @@
 
 <script>
 import {mapState} from 'vuex'
+import Pagination from '@/components/Pagination'
 import {getProfile,addFollow,deleteFollow} from '@/api/user'
-import {getYourFeedArticles,globalArticles,articleDetail} from '@/api/article'
+import {addFavorite,deleteFavorite,globalArticles} from '@/api/article'
 export default {
     async asyncData ({query,params,redirect}) {
       // tab 用于tab 切换
@@ -146,7 +153,13 @@ export default {
       ...mapState(['user']),
       isMine(){
         return this.from === 'mine'
+      },
+      pageCount(){
+        return Math.ceil(this.articlesCount/limit)
       }
+    },
+    components: {
+      Pagination
     },
     middleware: ['auth'], 
     
@@ -173,6 +186,24 @@ export default {
             user: user
           }
         })
+      },
+      // 点赞与取消点赞
+      async favoriteEvent(article){
+        // 获取当前的点赞状态
+        const status = article.favorited;
+        article.favoriteDisable = true;
+        if(status){
+          // 取消点赞
+          article.favoritesCount -= 1;
+          article.favorited = false;
+          deleteFavorite(article.slug)
+        }else{
+          // 点赞
+          article.favoritesCount += 1;
+          article.favorited = true;
+          addFavorite(article.slug)
+        }
+        article.favoriteDisable = false;
       }
     },
 }

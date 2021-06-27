@@ -29,13 +29,13 @@
 
       <div class="col-xs-12 col-md-8 offset-md-2">
 
-        <form class="card comment-form" v-if="user">
+        <form class="card comment-form" v-if="user" @submit.prevent="addComment">
           <div class="card-block">
             <textarea class="form-control" placeholder="Write a comment..." rows="3" v-model="body" required></textarea>
           </div>
           <div class="card-footer">
-            <img src="http://i.imgur.com/Qr71crq.jpg" class="comment-author-img" />
-            <button class="btn btn-sm btn-primary" @click="addComment">
+            <img :src="user.image" class="comment-author-img" />
+            <button class="btn btn-sm btn-primary" >
              Post Comment
             </button>
           </div>
@@ -43,17 +43,22 @@
         <p show-authed="false" style="display: inherit;" v-else>
           <a ui-sref="app.login" href="#/login">Sign in</a> or <a ui-sref="app.register" href="#/register">sign up</a> to add comments on this article.
         </p>
-        <div class="card" v-for="comment in comms" :key="comment">
+        <div class="card" v-for="(comment,index) in comms" :key="index">
           <div class="card-block">
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <p class="card-text">{{comment.body}}</p>
           </div>
           <div class="card-footer">
             <a href="" class="comment-author">
-              <img src="http://i.imgur.com/Qr71crq.jpg" class="comment-author-img" />
+              <img :src="user.image" class="comment-author-img" />
             </a>
             &nbsp;
-            <a href="" class="comment-author">Jacob Schmidt</a>
-            <span class="date-posted">Dec 29th</span>
+            <nuxt-link :to="{
+              name: 'profile',
+              params: {
+                username: user.username
+              }
+            }" class="comment-author">{{user.username}}</nuxt-link>
+            <span class="date-posted">{{comment.createdAt|date('MMM DD,YYYY')}}</span>
           </div>
         </div>        
       </div>
@@ -75,15 +80,28 @@ export default {
     async asyncData({params}){
       // 获取文章详情及文章的评论列表
       const { data } = await articleDetail(params.slug)
-      const { comments } = await getComments(params.slug)
       return {
         article: data.article,
-        comms: comments
+        
+      }
+    },
+    head() {
+      // 设置头部meata 有助于seo
+      return {
+        title: this.article.title,
+        meta: [
+          {
+            hid: 'description',
+            name: 'description',
+            content: 'My custom description'
+          }
+        ]
       }
     },
     data: function () {
       return {
-        body: ''
+        body: '',
+        comms: []
       }
     },
     computed: {
@@ -92,9 +110,24 @@ export default {
     components: {
       ArticleMata
     },
+    mounted(){
+      this.getComment();
+    },
     methods: {
-      addComment(body){
-        addComments(body)
+      async getComment(){
+        const commentRes  = await getComments(this.article.slug)
+        const {comments} = commentRes.data;
+        this.comms = comments;
+      },
+      addComment(){
+        try{
+          addComments(this.article.slug,{
+            body: this.body
+          })
+          this.getComment();
+        }catch(err){
+          console.log(err)
+        }
       }
     }
 }

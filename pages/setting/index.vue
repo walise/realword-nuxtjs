@@ -44,7 +44,9 @@
           </fieldset>
         </form>
       </div>
-
+      <button class="btn btn-outline-danger" @click="logout()">
+          Or click here to logout.
+      </button>
     </div>
   </div>
 </div>
@@ -103,6 +105,14 @@ export default {
           console.log(err)
         }
         
+      },
+      logout(){
+        // 退出登录
+        Cookie.set('user',null)
+        this.$store.commit('setUser',null)
+        this.redirect({
+          name:'home'
+        })
       }
     },
     mounted () {

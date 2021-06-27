@@ -6,8 +6,7 @@ export const request = axios.create({
 // 添加请求拦截器 统一设置 请求时的用户token
 // 任何请求都要经过拦截器
 // context 是上下文对象
-export default ({ store }) => {
-    
+export default ({ store,redirect }) => {
     request.interceptors.request.use(function (config) {
         // 在发送请求之前做些什么
         // 判断用户是否登录 拿到用户的token
@@ -18,7 +17,6 @@ export default ({ store }) => {
         }
         return config;
       }, function (error) {
-        // 对请求错误做些什么
         return Promise.reject(error);
       });
     

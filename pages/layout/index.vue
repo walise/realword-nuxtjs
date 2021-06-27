@@ -16,14 +16,19 @@
             </nuxt-link>
           </li>
           <!-- 如果用户已登录 显示用户名及头像 -->
-          <li class="nav-item" v-if="user">
-            <nuxt-link class="nav-link" :to="{name: 'profile', params: {username: user.username },query:{from: 'mine'}}">{{user.username}}</nuxt-link>
-          </li>
-          <li class="nav-item" v-if="user">
-            <nuxt-link class="nav-link" to="setting">
-              <i class="ion-gear-a"></i>&nbsp;Settings
-            </nuxt-link>
-          </li>
+          <ul v-if="user" class="nav navbar-nav pull-xs-right" style="margin-left:1em">
+            <li class="nav-item" >
+              <nuxt-link class="nav-link" :to="{name: 'profile', params: {username: user.username },query:{from: 'mine'}}">
+                <img class="user-pic" :src="user.image" />
+                {{user.username}}
+              </nuxt-link>
+            </li>
+            <li class="nav-item">
+              <nuxt-link class="nav-link" to="setting">
+                <i class="ion-gear-a"></i>&nbsp;Settings
+              </nuxt-link>
+            </li>
+          </ul>
           <!-- 用户没有登录 显示登录 -->
           <li class="nav-item" v-else>
             <nuxt-link class="nav-link" to="/login">Sign in</nuxt-link>
@@ -59,5 +64,11 @@ export default {
 </script>
 
 <style>
-
+  .user-pic{
+    display: inline-block;
+    height: 26px;
+    border-radius: 50px;
+    float: left;
+    margin-right: 5px;
+  }
 </style>
