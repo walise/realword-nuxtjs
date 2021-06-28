@@ -30,6 +30,14 @@ const getYourFeedArticles = params => {
         params
     })
 }
+// 发布文章
+const createArticle = params => {
+    return  new request({
+        method: 'post',
+        url: '/api/articles',
+        data: params
+    })
+}
 // 文章点赞 /api/articles/:slug/favorite
 const addFavorite = slug => {
     return  new request({
@@ -78,5 +86,6 @@ export {
     deleteFavorite,
     getComments,
     addComments,
-    deleteComments
+    deleteComments,
+    createArticle
 }
