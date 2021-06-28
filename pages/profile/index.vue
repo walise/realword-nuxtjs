@@ -69,7 +69,7 @@
             </li>
           </ul>
         </div>
-        <div v-if="articleCount !== 0">
+        <div v-if="articlesCount !== 0">
           <div class="article-preview" v-for="article in articles" :key="article.slug">
             <div class="article-meta">
               <a href="#"><img :src="article.author.image" /></a>
@@ -98,6 +98,11 @@
               <span>Read more...</span>
             </nuxt-link>
           </div>
+          <Pagination :total="articlesCount" 
+                    :pageCount="pageCount" 
+                    :activePage="page"
+                    linkTo="profile"
+                    :tab="tab" />
         </div>
         <div v-else class="article-preview">No articles are here... yet.</div>
       </div>
@@ -122,7 +127,7 @@ export default {
       // 页码 
       const page = query.page || 1; // 没有传时，默认为1
       // 每页显示数量
-      const limit = 10;
+      const limit = 2;
       // 开始从多少项查询 （page-1)*limit
       const offset = (page-1) * limit;
       // 获取个人信息
@@ -144,18 +149,18 @@ export default {
         from: query.from,
         profile,
         articles: articles,
-        articleCount: articlesCount,
+        articlesCount: articlesCount,
         redirect
       }
     },
-    watchQuery: ['tab'], // 监听路由中相关参数的变化  更新页面数据
+    watchQuery: ['tab','page'], // 监听路由中相关参数的变化  更新页面数据
     computed: {
       ...mapState(['user']),
       isMine(){
         return this.from === 'mine'
       },
       pageCount(){
-        return Math.ceil(this.articlesCount/limit)
+        return Math.ceil(this.articlesCount/this.limit)
       }
     },
     components: {

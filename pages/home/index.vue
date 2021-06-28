@@ -115,6 +115,7 @@
         <Pagination :total="articlesCount" 
                     :pageCount="totalPage" 
                     :activePage="page"
+                    linkTo="home"
                     :tag="$route.query.tag"
                     :tab="tab">
         </Pagination>

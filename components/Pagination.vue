@@ -12,7 +12,7 @@
              <nuxt-link
               class=""
               :to="{
-                name: 'home',
+                name: linkTo,
                 query: {
                   page: page,
                   tag: tag,
@@ -58,6 +58,9 @@ export default {
             default: 'global_feed'
         },
         tag: {
+            type: String
+        },
+        linkTo: {
             type: String
         }
     },
@@ -144,6 +147,11 @@ export default {
         background-color: #5cb85c;
         font-weight: 600;
         border: 1px solid #5cb85c;
+    }
+    .pagination-nav a{
+        display: block;
+        width: 100%;
+        height: 100%;
     }
     .pagination-nav .active a{
         color: #fff !important;
