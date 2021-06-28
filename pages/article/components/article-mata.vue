@@ -25,7 +25,7 @@
     <button class="btn btn-sm btn-outline-secondary">
         <i class="ion-plus-round"></i>
         &nbsp;
-        Follow Eric Simons <span class="counter">({{article.favoritesCount}})</span>
+        Follow {{article.author.username}} <span class="counter">({{article.favoritesCount}})</span>
     </button>
     &nbsp;&nbsp;
     <button class="btn btn-sm btn-outline-primary">
