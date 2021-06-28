@@ -185,7 +185,7 @@ export default {
       },
       //  前往设置个人信息
       toSet(user){
-        this.redirect({
+        this.$router.push({
           name: 'setting',
           params: {
             user: user
