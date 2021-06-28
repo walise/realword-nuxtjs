@@ -12,10 +12,7 @@
   <div class="container page">
 
     <div class="row article-content">
-      <div class="col-md-12">
-        <p>
-        {{article.body}}
-        </p>
+      <div class="col-md-12" v-html="article.body">
       </div>
     </div>
 
@@ -75,13 +72,18 @@
 import { mapState } from 'vuex'
 import { articleDetail,getComments,addComments } from '@/api/article'
 import ArticleMata from './components/article-mata.vue'
+// 处理markdwon 文本内容
+import MarkdownIt from 'markdown-it'
 export default {
     name: 'articlePage',
     async asyncData({params}){
       // 获取文章详情及文章的评论列表
       const { data } = await articleDetail(params.slug)
+      const {article } = data
+      const md = new MarkdownIt()
+      article.body = md.render(article.body)
       return {
-        article: data.article,
+        article: article,
         
       }
     },
